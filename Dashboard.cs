@@ -1,5 +1,6 @@
 ﻿using Elite.Models;
-using EliteBackend.Services;
+using Elite.Service;
+using Elite.Service;
 using System;
 using System.Windows.Forms;
 
@@ -7,29 +8,29 @@ namespace Elite
 {
     public partial class Dashboard : Form
     {
-        public static MongoDBService MongoDBService = new MongoDBService();
+        public static BackendAPIService BackendAPI = new BackendAPIService();
 
-        public static User User;
+        public static User updatedUser;
 
         public Dashboard(User user)
         {
             InitializeComponent();
-            User = user;
-            double UserHeight = User.Height / 100;
-            double UserWeight = User.Weight;
+            updatedUser = user;
+            double UserHeight = updatedUser.Height / 100;
+            double UserWeight = updatedUser.Weight;
             BMI.Text = (Math.Round(Util.GetBMI(UserHeight, user.Weight), 2)).ToString();
-            BMIStatus.Text = Util.getBMIStatus(Util.GetBMI((User.Height/100), user.Weight));
-            GW.Text = User.WeightGoal.Weight.ToString() + " Kg";
-            CurrentWeight.Text =  User.Weight.ToString() + " Kg";
-            BMR.Text = (Math.Round(Util.GetBasalMetabolicRate(User.Sex, User.Height, user.Weight, User.Age), 2)).ToString() + " Calories";
-            BFP.Text = (Math.Round(Util.GetBodyFatPercentage(User.Sex, User.Height, User.Waist, User.Neck, User.Hip), 2)).ToString() + "%";
-            TDEE.Text = (Math.Round(Util.GetBasalMetabolicRate(User.Sex, User.Height, user.Weight, User.Age), 2) * Util.getTDEEValue(User.AveargeActivityType)).ToString() + " Calories";
+            BMIStatus.Text = Util.getBMIStatus(Util.GetBMI((updatedUser.Height/100), user.Weight));
+            GW.Text = updatedUser.WeightGoal.Weight.ToString() + " Kg";
+            CurrentWeight.Text = updatedUser.Weight.ToString() + " Kg";
+            BMR.Text = (Math.Round(Util.GetBasalMetabolicRate(updatedUser.Sex, updatedUser.Height, updatedUser.Weight, updatedUser.Age), 2)).ToString() + " Calories";
+            BFP.Text = (Math.Round(Util.GetBodyFatPercentage(updatedUser.Sex, updatedUser.Height, updatedUser.Waist, updatedUser.Neck, updatedUser.Hip), 2)).ToString() + "%";
+            TDEE.Text = (Math.Round(Util.GetBasalMetabolicRate(updatedUser.Sex, updatedUser.Height, updatedUser.Weight, updatedUser.Age), 2) * Util.getTDEEValue(updatedUser.AveargeActivityType)).ToString() + " Calories";
             Double CalorieAdjustment = 0;
 
-            if (user.Weight > User.WeightGoal.Weight)
+            if (user.Weight > updatedUser.WeightGoal.Weight)
             {
                 double SafeLooseWeightKgPerDay = 0.06;
-                double tdee = Util.GetBasalMetabolicRate(User.Sex, User.Height, user.Weight, User.Age) * Util.getTDEEValue(User.AveargeActivityType);
+                double tdee = Util.GetBasalMetabolicRate(updatedUser.Sex, updatedUser.Height, updatedUser.Weight, updatedUser.Age) * Util.getTDEEValue(updatedUser.AveargeActivityType);
                 double DailyCalorie = 7700* SafeLooseWeightKgPerDay;
                 double CalorieDeficit = tdee - DailyCalorie;
                 CalorieAdjustment = CalorieDeficit;
@@ -48,7 +49,7 @@ namespace Elite
             } else
             {
                 double SafeGainWeightKgPerDay = 0.06;
-                double tdee = Util.GetBasalMetabolicRate(User.Sex, User.Height, user.Weight, User.Age) * Util.getTDEEValue(User.AveargeActivityType);
+                double tdee = Util.GetBasalMetabolicRate(updatedUser.Sex, updatedUser.Height, updatedUser.Weight, updatedUser.Age) * Util.getTDEEValue(updatedUser.AveargeActivityType);
                 double DailyCalorie = 7700* SafeGainWeightKgPerDay;
                 double CalorieDeficit = tdee + DailyCalorie;
                 CalorieAdjustment = CalorieDeficit;
@@ -204,19 +205,19 @@ namespace Elite
 
         private void button1_Click_1(object sender, EventArgs e)
         {
-            new MealPlan(User).Show();
+            new MealPlan(updatedUser).Show();
             this.Hide();
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            new WorkoutPlan(User).Show();
+            new WorkoutPlan(updatedUser).Show();
             this.Hide();
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            new Profile(User).Show();
+            new Profile(updatedUser).Show();
             this.Hide();
         }
 

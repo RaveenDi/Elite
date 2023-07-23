@@ -1,5 +1,5 @@
 ﻿using Elite.Models;
-using EliteBackend.Services;
+using Elite.Service;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -15,7 +15,7 @@ namespace Elite
 {
     public partial class MealPlan : Form
     {
-        public static MongoDBService MongoDBService = new MongoDBService();
+        public static BackendAPIService BackendAPI = new BackendAPIService();
 
         public static User _user;
 
@@ -30,7 +30,7 @@ namespace Elite
 
         public async void getAllMealPlans()
         {
-            _user = await MongoDBService.GetUserByUsername(_user.Email);
+            _user = await BackendAPI.GetUserAsync(_user.Email);
             if(_user.Meals == null) {
                 _list = new List<Meal>();
             } else
@@ -55,9 +55,9 @@ namespace Elite
         {
             String ID = textID.Text;
             _list.RemoveAll(x => x.Id == ID);
-            User user = await MongoDBService.GetUserByUsername(_user.Email);
+            User user = await BackendAPI.GetUserAsync(_user.Email);
             user.Meals = _list;
-            await MongoDBService.Updateuser(_user.Email, user);
+            await BackendAPI.Updateuser(_user.Email, user);
             getAllMealPlans();
         }
 
@@ -86,9 +86,9 @@ namespace Elite
                 meal.Quantity = Decimal.ToInt32(textQuantity.Value);
 
                 _list.Add(meal);
-                User user =  await MongoDBService.GetUserByUsername(_user.Email);
+                User user =  await BackendAPI.GetUserAsync(_user.Email);
                 user.Meals = _list;
-                await MongoDBService.Updateuser(_user.Email, user);
+                await BackendAPI.Updateuser(_user.Email, user);
                 getAllMealPlans();
             }
         }
@@ -113,9 +113,9 @@ namespace Elite
                     break;
                 }
             }
-            User user = await MongoDBService.GetUserByUsername(_user.Email);
+            User user = await BackendAPI.GetUserAsync(_user.Email);
             user.Meals = _list;
-            await MongoDBService.Updateuser(_user.Email, user);
+            await BackendAPI.Updateuser(_user.Email, user);
             getAllMealPlans();
 
         }

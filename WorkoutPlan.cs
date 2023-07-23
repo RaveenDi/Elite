@@ -1,5 +1,5 @@
 ﻿using Elite.Models;
-using EliteBackend.Services;
+using Elite.Service;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,7 +14,7 @@ namespace Elite
 {
     public partial class WorkoutPlan : Form
     {
-        public static MongoDBService MongoDBService = new MongoDBService();
+        public static BackendAPIService BackendAPI = new BackendAPIService();
 
         public static User _user;
 
@@ -29,7 +29,7 @@ namespace Elite
 
         public async void getAllWorkoutPlans()
         {
-            _user = await MongoDBService.GetUserByUsername(_user.Email);
+            _user = await BackendAPI.GetUserAsync(_user.Email);
             if (_user.Workouts == null)
             {
                 _list = new List<Workout>();
@@ -63,9 +63,9 @@ namespace Elite
                 workout.Time = Decimal.ToInt32(textTime.Value);
 
                 _list.Add(workout);
-                User user = await MongoDBService.GetUserByUsername(_user.Email);
+                User user = await BackendAPI.GetUserAsync(_user.Email);
                 user.Workouts = _list;
-                await MongoDBService.Updateuser(_user.Email, user);
+                await BackendAPI.Updateuser(_user.Email, user);
                 getAllWorkoutPlans();
             }
         }
@@ -90,9 +90,9 @@ namespace Elite
                     break;
                 }
             }
-            User user = await MongoDBService.GetUserByUsername(_user.Email);
+            User user = await BackendAPI.GetUserAsync(_user.Email);
             user.Workouts = _list;
-            await MongoDBService.Updateuser(_user.Email, user);
+            await BackendAPI.Updateuser(_user.Email, user);
             getAllWorkoutPlans();
         }
 
@@ -100,9 +100,9 @@ namespace Elite
         {
             String ID = textID.Text;
             _list.RemoveAll(x => x.Id == ID);
-            User user = await MongoDBService.GetUserByUsername(_user.Email);
+            User user = await BackendAPI.GetUserAsync(_user.Email);
             user.Workouts = _list;
-            await MongoDBService.Updateuser(_user.Email, user);
+            await BackendAPI.Updateuser(_user.Email, user);
             getAllWorkoutPlans();
         }
 

@@ -1,5 +1,5 @@
 ﻿using Elite.Models;
-using EliteBackend.Services;
+using Elite.Service;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,7 +14,7 @@ namespace Elite
 {
     public partial class AdditionalDetailsForm1 : Form
     {
-        public static MongoDBService MongoDBService = new MongoDBService();
+        public static BackendAPIService BackendAPI = new BackendAPIService();
 
         public static User _user;
 
@@ -42,13 +42,13 @@ namespace Elite
                 MessageBox.Show("Please enter measured values.", "Start up failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
             } else
             {
-                User UpdatedUser = await MongoDBService.GetUserByUsername(_user.Email);
+                User UpdatedUser = await BackendAPI.GetUserAsync(_user.Email);
                 UpdatedUser.Height = Decimal.ToInt32((decimal)textHeight.Value);
                 UpdatedUser.Neck = Decimal.ToInt32((decimal)textNeck.Value);
                 UpdatedUser.Waist = Decimal.ToInt32((decimal)textWaist.Value);
                 UpdatedUser.Weight = Decimal.ToInt32((decimal)textWeight.Value);
                 UpdatedUser.Hip = Decimal.ToInt32((decimal)textHip.Value);
-                await MongoDBService.Updateuser(_user.Email, UpdatedUser);
+                await BackendAPI.Updateuser(_user.Email, UpdatedUser);
                 new Startup(_user).Show();
                 this.Hide();
             }

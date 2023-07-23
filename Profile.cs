@@ -1,5 +1,5 @@
 ﻿using Elite.Models;
-using EliteBackend.Services;
+using Elite.Service;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,7 +14,7 @@ namespace Elite
 {
     public partial class Profile : Form
     {
-        public static MongoDBService MongoDBService = new MongoDBService();
+        public static BackendAPIService BackendAPI = new BackendAPIService();
 
         public static User _user;
 
@@ -31,7 +31,7 @@ namespace Elite
 
         private async void button1_Click(object sender, EventArgs e)
         {
-            await MongoDBService.RemoveUser(_user.Id);
+            await BackendAPI.DeleteUser(_user.Id);
             new LoginForm().Show();
             this.Hide();
         }
@@ -39,15 +39,16 @@ namespace Elite
         private async void button2_Click(object sender, EventArgs e)
         {
 
-            User user = await MongoDBService.GetUserByUsername(_user.Email);
+            User user = await BackendAPI.GetUserAsync(_user.Email);
             user.FirstName = fname.Text;
             user.LastName = lname.Text;
             user.Age = Decimal.ToInt32(age.Value);
             user.Height = Decimal.ToInt32(height.Value);
             user.Weight = Decimal.ToInt32(weight.Value);
-            await MongoDBService.Updateuser(_user.Email, user);
+            await BackendAPI.Updateuser(_user.Email, user);
             MessageBox.Show("Successfully uppdate.", "Start up success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
+            new Dashboard(user).Show();
+            this.Hide();
         }
 
         private void label1_Click(object sender, EventArgs e)

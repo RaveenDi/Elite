@@ -1,5 +1,5 @@
 ﻿using Elite.Models;
-using EliteBackend.Services;
+using Elite.Service;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace Elite
 {
     public partial class RegisterForm : Form
     {
-        public static MongoDBService MongoDBService = new MongoDBService();
+        public static BackendAPIService BackendAPI = new BackendAPIService();
 
         public RegisterForm()
         {
@@ -115,7 +115,7 @@ namespace Elite
                 MessageBox.Show("Email Should be valid email address.", "Registration failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
             } else
             {
-                User userExisting = await MongoDBService.GetUserByUsername(textUsername.Text);
+                User userExisting = await BackendAPI.GetUserAsync(textUsername.Text);
                 if (userExisting != null)
                 {
                     MessageBox.Show("User is already exists.", "Registration failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -130,9 +130,15 @@ namespace Elite
                     user.LastName = textLastName.Text;
                     user.Age = Decimal.ToInt32((decimal)textAge.Value);
                     user.Sex = radioMale.Checked ? "MALE" : "FEMALE";
-                    await MongoDBService.AddUser(user);
-                    new AdditionalDetailsForm1(user).Show();
-                    this.Hide();
+                    bool result = await BackendAPI.AddUser(user);
+                    if(!result)
+                    {
+                        MessageBox.Show("Regesitration is failed .", "Registration failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    } else
+                    {
+                        new AdditionalDetailsForm1(user).Show();
+                        this.Hide();
+                    }
                 }
 
             }

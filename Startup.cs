@@ -1,5 +1,5 @@
 ﻿using Elite.Models;
-using EliteBackend.Services;
+using Elite.Service;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,9 +14,9 @@ namespace Elite
 {
     public partial class Startup : Form
     {
-        public static MongoDBService MongoDBService = new MongoDBService();
+        public static BackendAPIService BackendAPI = new BackendAPIService();
 
-        public  static User User;
+        public static User User;
 
         public Startup(User user)
         {
@@ -62,13 +62,13 @@ namespace Elite
                 WeightGoal weightGoal = new WeightGoal();
                 weightGoal.Weight = Decimal.ToInt32((decimal)textWeightGoal.Value);
                 weightGoal.Days = Decimal.ToInt32((decimal)numericUpDownDays.Value);
-                User UpdatedUser = await MongoDBService.GetUserByUsername(User.Email);
+                User UpdatedUser = await BackendAPI.GetUserAsync(User.Email);
                 UpdatedUser.AveargeActivityType = Util.getTDEELevel(comboBoxActivity.Text);
                 UpdatedUser.WeightGoal = weightGoal;
 
-                await MongoDBService.Updateuser(User.Email, UpdatedUser);
-                new Dashboard(User).Show();
-
+                await BackendAPI.Updateuser(User.Email, UpdatedUser);
+                new Dashboard(UpdatedUser).Show();
+                this.Hide();
             }
         }
 

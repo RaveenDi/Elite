@@ -1,5 +1,5 @@
 ﻿using Elite.Models;
-using EliteBackend.Services;
+using Elite.Service;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace Elite
 {
     public partial class LoginForm : Form
     {
-        public static MongoDBService MongoDBService = new MongoDBService();
+        public static BackendAPIService BackendAPI = new BackendAPIService();
         public LoginForm()
         {
             InitializeComponent();
@@ -33,7 +33,8 @@ namespace Elite
                 MessageBox.Show("Username or Password field is empty.", "login failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
             } else
             {
-                User user = await MongoDBService.GetUserByUsername(textUsername.Text);
+
+                User user = await BackendAPI.GetUserAsync(textUsername.Text);
                 if (user == null || textPassword.Text != user.Password)
                 {
                     MessageBox.Show("Username or Password is incorrect.", "login failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
