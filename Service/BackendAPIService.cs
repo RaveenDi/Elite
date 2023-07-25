@@ -19,7 +19,7 @@ namespace Elite.Service
 
         public BackendAPIService()
         {
-            httpClient.BaseAddress = new Uri("http://localhost:5133/");
+            httpClient.BaseAddress = new Uri("http://Elite-ALB-153612500.us-east-1.elb.amazonaws.com/");
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
