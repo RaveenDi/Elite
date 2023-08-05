@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Elite.Service
 {
-    public class BackendAPIService
+    public class BackendAPIService : BackendAPI
     {
         private readonly HttpClient httpClient = new HttpClient();
 

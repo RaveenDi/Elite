@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Elite.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,32 +7,39 @@ using System.Threading.Tasks;
 
 public static class Util
 {
-    public static double GetBMI(double height, double weight) => (double)(weight / Math.Pow(height, 2));
+    public static double GetBMI(double height, double weight) => Math.Round((weight / Math.Pow(height, 2)), 2);
 
-    public static double GetBodyFatPercentage(string sex, double height, double waist, double neck, double hip)
+    public static double GetBodyFatPercentage(User user)
     {
-        if (sex.Equals("MALE"))
+        double bfp = 0;
+
+        if (user.Sex.Equals("MALE"))
         {
-            double value = 1.0324 - 0.19077 * Math.Log10(waist - neck) + 0.15456 * Math.Log10(height);
-            return (495 / value) - 450;
+            double value = 1.0324 - 0.19077 * Math.Log10(user.Waist - user.Neck) + 0.15456 * Math.Log10(user.Height);
+            bfp = (495 / value) - 450;
         }
         else
         {
-            double value = 1.29579 - 0.35004 * Math.Log10(waist + hip - neck) + 0.022100 * Math.Log10(height);
-            return (495 / value) - 450;
+            double value = 1.29579 - 0.35004 * Math.Log10(user.Waist + user.Hip - user.Neck) + 0.022100 * Math.Log10(user.Height);
+            bfp = (495 / value) - 450;
         }
+        
+        return Math.Round(bfp, 2);
     }
 
-    public static double GetBasalMetabolicRate(string sex, double height, double weight, int age)
+    public static double GetBasalMetabolicRate(User user)
     {
-        if (sex.Equals("MALE"))
+        double value = 0;
+        if (user.Sex.Equals("MALE"))
         {
-            return 88.362 + (13.397 * weight) + (4.799 * height) - (5.677 * age);
+            value = 88.362 + (13.397 * user.Weight) + (4.799 * user.Height) - (5.677 * user.Age);
         }
         else
         {
-            return 447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age);
+            value = 447.593 + (9.247 * user.Weight) + (3.098 * user.Height) - (4.330 * user.Age);
         }
+
+        return Math.Round(value, 2);
     }
 
     public static string getBMIStatus(Double value)
@@ -98,5 +106,12 @@ public static class Util
         {
             return "L5";
         }
+    }
+
+    public static double getBMI(User user)
+    {
+        double UserHeight = user.Height / 100;
+        double UserWeight = user.Weight;
+        return (Math.Round((double)(UserWeight / Math.Pow(UserHeight, 2)), 2));
     }
 }
